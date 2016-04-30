@@ -1,4 +1,13 @@
-#include "stdafx.h"
+#pragma once
+
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+
+#include <stdio.h>
+#include <winsock2.h>
+
+#include "FakeBlob.h"
+
+#pragma comment(lib, "ws2_32.lib")
 
 class FakeBlob;
 
@@ -15,5 +24,5 @@ private:
 public:
 	static int setupSimSocket();
 	static int closeSimSocket();
-	static int sendVisionBlob(FakeBlob const & blob);
+	static int sendVisionBlob(FakeBlob * blob);
 };

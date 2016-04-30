@@ -1,3 +1,4 @@
+#include "Sim_Socket.h"
 #include "stdafx.h"
 
 const char * SimulationClient::IPADDRESS = "127.0.0.1";
@@ -51,29 +52,29 @@ int SimulationClient::closeSimSocket()
 	return 0;
 }
 
-int SimulationClient::sendVisionBlob(FakeBlob const & blob)
+int SimulationClient::sendVisionBlob(FakeBlob * blob)
 {
 	char data[68];
 	int * i;
 	double * d;
 
 	i = (int*)data;
-	*i++ = blob.id;
+	*i++ = blob->id;
 
 	d = (double*)i;
-	*d++ = blob.time;
-	*d++ = blob.x;
-	*d++ = blob.y;
+	*d++ = blob->time;
+	*d++ = blob->x;
+	*d++ = blob->y;
 
 	i = (int*)d;
-	*i++ = blob.innerColor;
-	*i++ = blob.outerColor;
+	*i++ = blob->innerColor;
+	*i++ = blob->outerColor;
 
 	d = (double*)i;
-	*d++ = blob.orientation;
-	*d++ = blob.velocityRot;
-	*d++ = blob.velocityx;
-	*d++ = blob.velocityy;
+	*d++ = blob->orientation;
+	*d++ = blob->velocityRot;
+	*d++ = blob->velocityx;
+	*d++ = blob->velocityy;
 
 	if (send(simSocket, (char*)&data, sizeof(data), 0) < 0)
 	{

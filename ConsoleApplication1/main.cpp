@@ -17,7 +17,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	int result = SimulationClient::setupSimSocket();
 	if (result < 0) printf("FAILED TO SETUP SIM SOCKET!\n");
 
-	result = SimulationClient::sendVisionBlob(blob);
+	result = SimulationClient::sendVisionBlob(&blob);
 	if (result < 0) printf("FAILED TO SEND BLOB DATA!\n");
 
 	result = SimulationClient::closeSimSocket();
