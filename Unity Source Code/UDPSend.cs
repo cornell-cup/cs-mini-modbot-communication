@@ -6,6 +6,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Collections.Generic;
 
 public class Command {
     double dosomething;
@@ -59,13 +60,32 @@ public class UDPSend : MonoBehaviour {
     {
         try 
         {
-            byte[] data = b;
-            client.send(data, data.Length, remoteEndPoint);
+            List<byte> data = new List<byte>();
+            addCommand1(data, b);
+            addCommand2(data, b);
+            //...
+            byte[] dataf = data.ToArray();
+            client.send(dataf, dataf.Length, remoteEndPoint);
+        } 
+        catch (Exception err) 
+        {
+            print(err.toString());
         }
 
     }
     private void GetCurrCommand() {
         //neeed to grab current command from simulation.
+    }
+    private void addCommand1(List<byte> b, Command p)
+    {
+        int velocity = p.velocity;
+        b.add(Encoding.UTF8.GetBytes(velocity));
+
+    }
+    private void addCommand2(List<byte> b, Command p)
+    {
+        double direction = p.direction;
+        b.add(Encoding.UTF8.GetBytes(direction));
     }
 
     private void sendString(string message) {
