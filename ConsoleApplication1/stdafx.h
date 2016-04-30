@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <winsock2.h>
+#include "Sim_Socket.h"
+#include "FakeBlob.h"
 
 #pragma comment(lib, "ws2_32.lib")
 

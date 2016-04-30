@@ -1,74 +1,30 @@
-// ConsoleApplication1.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	WSADATA wsa;
-	SOCKET serverSocket;
-	struct sockaddr_in server;
+	FakeBlob blob;
+	blob.id = 2;
+	blob.time = 2.643;
+	blob.x = 2.1334;
+	blob.y = 4.7655;
+	blob.innerColor = 1;
+	blob.outerColor = 2;
+	blob.orientation = 2.6342;
+	blob.velocityRot = 4.3647;
+	blob.velocityx = 6.375345;
+	blob.velocityy = 2.36347;
 
-	printf("\nInitialising Winsock...\n");
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-	{
-		printf("Failed. Error Code : %d", WSAGetLastError());
-		return 1;
-	}
+	int result = SimulationClient::setupSimSocket();
+	if (result < 0) printf("FAILED TO SETUP SIM SOCKET!\n");
 
-	if ((serverSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET)
-	{
-		printf("Could not create socket.\n");
-	}
-	else
-	{
-		printf("Socket created.\n");
-	}
+	result = SimulationClient::sendVisionBlob(blob);
+	if (result < 0) printf("FAILED TO SEND BLOB DATA!\n");
 
-	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = inet_addr("127.0.0.1");
-	server.sin_port = htons(607);
-
-	//if (connect(serverSocket, (SOCKADDR *)&server, sizeof(server)) == SOCKET_ERROR)
-	if (bind(serverSocket, (SOCKADDR *)&server, sizeof(server)) == SOCKET_ERROR)
-	{
-		printf("Connection error.\n");
-	}
-	else
-	{
-		printf("Connected.\n");
-	}
-
-	/*
-	int data [] = { 42, 63, 23, 75 };
-	if (send(serverSocket, (char *)&data, sizeof(data), 0) < 0)
-	{
-		printf("Send failed.\n");
-	}
-	else
-	{
-		printf("Sent.\n");
-	}
-
-	shutdown(serverSocket, SD_SEND);
-	*/
-
-	char recvBuf[4];
-	sockaddr_in senderaddr;
-	int senderaddrsize = sizeof(senderaddr);
-
-	while (true){
-		int result = recvfrom(serverSocket, recvBuf, 4, 0, (SOCKADDR *)&senderaddr, &senderaddrsize);
-		if (result == SOCKET_ERROR) printf("%ld", WSAGetLastError());
-
-		//printf("Received: %f\n", *(float*)&recvBuf);
-		//printf("Received: %d\n", *(int*)&recvBuf);
-	}
-
-	closesocket(serverSocket);
-	WSACleanup();
+	result = SimulationClient::closeSimSocket();
+	if (result < 0) printf("FAILED TO CLOSE SIM SOCKET!\n");
 
 	Sleep(5000);
+
 	return 0;
 }
 
