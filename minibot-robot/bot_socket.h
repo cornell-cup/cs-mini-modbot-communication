@@ -9,18 +9,18 @@
 
 class FakeBlob;
 
-class SimulationClient
+class MinibotClient
 {
 private:
 	const static char* IPADDRESS;
 	const static int PORT;
 
 	static WSADATA wsa;
-	static SOCKET simSocket;
-	static struct sockaddr_in simAddr;
+	static SOCKET botSocket;
+	static struct sockaddr_in botAddr;
 
 public:
-	static int setupSimSocket();
-	static int closeSimSocket();
+	static int setupBotSocket();
+	static int closeBotSocket();
 	static int sendMotorControl();
 };
