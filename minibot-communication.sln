@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minibot-robot", "minibot-robot\minibot-robot.vcxproj", "{65C7CFA1-AF57-4DB2-8BC8-F52CCA359388}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minibot-vision", "minibot-vision\minibot-vision.vcxproj", "{7D8D9DA5-97CF-4E95-91EC-DD087738662E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65C7CFA1-AF57-4DB2-8BC8-F52CCA359388}.Debug|Win32.ActiveCfg = Debug|Win32
+		{65C7CFA1-AF57-4DB2-8BC8-F52CCA359388}.Debug|Win32.Build.0 = Debug|Win32
+		{65C7CFA1-AF57-4DB2-8BC8-F52CCA359388}.Release|Win32.ActiveCfg = Release|Win32
+		{65C7CFA1-AF57-4DB2-8BC8-F52CCA359388}.Release|Win32.Build.0 = Release|Win32
+		{7D8D9DA5-97CF-4E95-91EC-DD087738662E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7D8D9DA5-97CF-4E95-91EC-DD087738662E}.Debug|Win32.Build.0 = Debug|Win32
+		{7D8D9DA5-97CF-4E95-91EC-DD087738662E}.Release|Win32.ActiveCfg = Release|Win32
+		{7D8D9DA5-97CF-4E95-91EC-DD087738662E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

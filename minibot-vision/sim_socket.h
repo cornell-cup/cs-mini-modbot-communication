@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <winsock2.h>
 
-#include "FakeBlob.h"
+#include "fake_blob.h"
 
 #pragma comment(lib, "ws2_32.lib")
 

@@ -1,4 +1,4 @@
-#include "Sim_Socket.h"
+#include "sim_socket.h"
 #include "stdafx.h"
 
 const char * SimulationClient::IPADDRESS = "127.0.0.1";
