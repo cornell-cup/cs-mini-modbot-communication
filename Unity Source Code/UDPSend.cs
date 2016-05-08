@@ -7,12 +7,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Collections.Generic;
+using System.Linq;
 
-public class Command {
-    double dosomething;
-
-}
-public class UDPSend : MonoBehaviour {
+public class UDPSend : MonoBehaviour
+{
     //private static int localport;
     public static Socket unity;
 
@@ -24,18 +22,13 @@ public class UDPSend : MonoBehaviour {
     IPEndPoint remoteEndPoint;
     UdpClient client;
 
-    //response boolean
-    public bool response = false;
-
-    //send boolean
-    public bool sent = false;
-
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         print("Initiating start sequence");
         init();
-	}
+    }
 
     public void init()
     {
@@ -45,55 +38,56 @@ public class UDPSend : MonoBehaviour {
         IP = "127.0.0.1"; //193.168.1.2
         port = 993;
 
-        remoteEndPoint = new IPEndPoint(IPAddress.Parse(IP),port);
+        remoteEndPoint = new IPEndPoint(IPAddress.Parse(IP), port);
         client = new UdpClient();
 
     }
 
     // Update is called once per frame
-    void Update () {
-        Command newCommand = GetCurrCommand();
-        sendCommand(b);
-	}
-
-    private void sendCommand(Command b)
+    void Update()
     {
-        try 
+        sendCommand();
+    }
+
+    private void sendCommand()
+    {
+        try
         {
-            List<byte> data = new List<byte>();
-            addCommand1(data, b);
-            addCommand2(data, b);
-            //...
-            byte[] dataf = data.ToArray();
-            client.send(dataf, dataf.Length, remoteEndPoint);
-        } 
-        catch (Exception err) 
+            List<byte[]> data = new List<byte[]>();
+            addCommand(data);
+            byte[] dataf = data
+                .SelectMany(a => a)
+                .ToArray();
+            client.Send(dataf, dataf.Length, remoteEndPoint);
+        }
+        catch (Exception err)
         {
-            print(err.toString());
+            print(err.ToString());
         }
 
     }
-    private void GetCurrCommand() {
-        //neeed to grab current command from simulation.
-    }
-    private void addCommand1(List<byte> b, Command p)
-    {
-        int velocity = p.velocity;
-        b.add(Encoding.UTF8.GetBytes(velocity));
 
-    }
-    private void addCommand2(List<byte> b, Command p)
+    private void addCommand(List<byte[]> b)
     {
-        double direction = p.direction;
-        b.add(Encoding.UTF8.GetBytes(direction));
+        //placeholder values should be replaced with the sims current values
+        float magnitudex = 5.0f;
+        float magnitudey = 6.0f;
+        int direction = 0;
+        int orientation = 45;
+        b.Add(BitConverter.GetBytes(magnitudex));
+        b.Add(BitConverter.GetBytes(magnitudey));
+        b.Add(BitConverter.GetBytes(direction));
+        b.Add(BitConverter.GetBytes(orientation));
     }
 
-    private void sendString(string message) {
-       try
+    private void sendString(string message)
+    {
+        try
         {
             byte[] data = Encoding.UTF8.GetBytes(message);
             client.Send(data, data.Length, remoteEndPoint);
-        } catch
+        }
+        catch
         {
             print("Error");
         }
