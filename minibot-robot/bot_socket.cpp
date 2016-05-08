@@ -9,7 +9,7 @@
 
 #define DEFAULT_BUFFER_SIZE 512
 
-const char * MinibotServer::IPADDRESS = "127.0.0.1";
+const char * MinibotServer::IPADDRESS = "192.168.4.12";
 const int MinibotServer::PORT = 607;
 
 WSADATA MinibotServer::wsa;
@@ -65,6 +65,32 @@ int MinibotServer::server() {
 		if ((bytes_rec = recv(botSocket, buff, buff_len, 0)) > 0) {
 			printf("Bytes received %d\n", bytes_rec);
 			printf("Data received\n %s", buff);
+
+			Control pkt;
+			int *i = (int *)buff;
+			pkt.orientation = *i++;
+			pkt.direction = *i++;
+
+			float *f = (float *)i;
+			pkt.velocity = (*f++) * 60; // scale from m/sec  to m/min
+
+			char dir = 'f';
+			if (pkt.orientation == 0) {
+				dir = 'r';
+			}
+
+			int time = 1; // (in seconds)
+
+			char command[DEFAULT_BUFFER_SIZE] = "./motorcontrol ";
+			command[16] = dir;
+			command[17] = ' ';
+			command[18] = (char) time;
+			char speed[DEFAULT_BUFFER_SIZE];
+			sprintf_s(speed, "%f", pkt.velocity);
+			strcat_s(command, speed);
+
+			system(command);
+
 		}
 		else if (bytes_rec == 0) {
 			printf("Connection closing...\n");
