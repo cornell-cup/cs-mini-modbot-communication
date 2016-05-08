@@ -1,14 +1,22 @@
 #include "bot_socket.h"
 #include "stdafx.h"
 
-const char * MinibotClient::IPADDRESS = "127.0.0.1";
-const int MinibotClient::PORT = 607;
+/** 
+ * Refer to the following link for Microsoft's Server C++ code:
+ * https://msdn.microsoft.com/en-us/library/windows/desktop/ms737593(v=vs.85).aspx
+ *
+ */
 
-WSADATA MinibotClient::wsa;
-SOCKET MinibotClient::botSocket;
-struct sockaddr_in MinibotClient::botAddr;
+#define DEFAULT_BUFFER_SIZE 512
 
-int MinibotClient::setupBotSocket()
+const char * MinibotServer::IPADDRESS = "127.0.0.1";
+const int MinibotServer::PORT = 607;
+
+WSADATA MinibotServer::wsa;
+SOCKET MinibotServer::botSocket;
+struct sockaddr_in MinibotServer::botAddr;
+
+int MinibotServer::setupBotSocket()
 {
 	printf("\nInitialising Winsock...\n");
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
@@ -31,9 +39,10 @@ int MinibotClient::setupBotSocket()
 	botAddr.sin_addr.s_addr = inet_addr(IPADDRESS);
 	botAddr.sin_port = htons(PORT);
 
-	if (connect(botSocket, (SOCKADDR *)&botAddr, sizeof(botAddr)) == SOCKET_ERROR)
+	if (bind(botSocket, (SOCKADDR *)&botAddr, sizeof(botAddr)) == SOCKET_ERROR)
 	{
-		printf("Connection error.\n");
+		printf("Connection error :: binding.\n");
+		closeBotSocket();
 		return -1;
 	}
 	else
@@ -44,7 +53,44 @@ int MinibotClient::setupBotSocket()
 	return 0;
 }
 
-int MinibotClient::closeBotSocket()
+
+int MinibotServer::server() {
+	char buff[DEFAULT_BUFFER_SIZE];
+	int buff_len = DEFAULT_BUFFER_SIZE;
+	int bytes_rec = 0;
+
+
+	printf("Waiting to receive from Simulation...\n");
+	do {
+		if ((bytes_rec = recv(botSocket, buff, buff_len, 0)) > 0) {
+			printf("Bytes received %d\n", bytes_rec);
+			printf("Data received\n %s", buff);
+		}
+		else if (bytes_rec == 0) {
+			printf("Connection closing...\n");
+		}
+		else {
+			printf("recv failed with error: %d", WSAGetLastError());
+			closesocket(botSocket);
+		}
+	} while (bytes_rec > 0);
+
+	if (shutdown(botSocket, SD_SEND) == SOCKET_ERROR) {
+		printf("shutdown failed with error: %d\n", WSAGetLastError);
+		closesocket(botSocket);
+		WSACleanup();
+		return -1;
+	}
+
+	closesocket(botSocket);
+	WSACleanup();
+
+	return 0;
+}
+
+
+
+int MinibotServer::closeBotSocket()
 {
 	closesocket(botSocket);
 	WSACleanup();
@@ -52,9 +98,18 @@ int MinibotClient::closeBotSocket()
 	return 0;
 }
 
-int MinibotClient::sendMotorControl()
+int MinibotServer::sendMotorControl(Control *pkt)
 {
 	char data[68];
+	int *i;
+	float *f;
+
+	i = (int *)data;
+	*i++ = pkt->orientation;
+	*i++ = pkt->direction;
+
+	f = (float *)i;
+	*f++ = pkt->velocity;
 
 
 	if (send(botSocket, (char*)&data, sizeof(data), 0) < 0)

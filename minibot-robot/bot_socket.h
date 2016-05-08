@@ -5,11 +5,13 @@
 #include <stdio.h>
 #include <winsock2.h>
 
+#include "control_pkt.h"
+
 #pragma comment(lib, "ws2_32.lib")
 
 class FakeBlob;
 
-class MinibotClient
+class MinibotServer
 {
 private:
 	const static char* IPADDRESS;
@@ -21,6 +23,7 @@ private:
 
 public:
 	static int setupBotSocket();
+	static int server();
 	static int closeBotSocket();
-	static int sendMotorControl();
+	static int sendMotorControl(Control *pkt);
 };
