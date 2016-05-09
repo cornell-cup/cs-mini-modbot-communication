@@ -5,10 +5,10 @@
 #include <stdio.h>
 
 #include "control_pkt.h"
+#include "motor_drive.h"
+// #include "GLOBAL_DEFINES.h"
 
 #pragma comment(lib, "ws2_32.lib")
-
-class FakeBlob;
 
 class MinibotServer
 {
