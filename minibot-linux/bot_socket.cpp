@@ -87,12 +87,12 @@ int MinibotServer::server() {
 			pkt.direction = *i++;
 
 			float *f = (float *)i;
-			pkt.velocity = ((*f++)) + 14; // scale from m/sec  to m/min
+			pkt.velocity = ((*f++)); // scale from m/sec  to m/min
 
 
 			direction = DIRECTION_STOP;
 			printf("Int Vel: %f\n", pkt.velocity);
-			if (((int) pkt.velocity)> 14) {
+			if (((int) pkt.velocity) > 0) {
 			if (pkt.direction == 1) {
 				direction = DIRECTION_FORWARD;
 			} else if (pkt.direction == 0) {
@@ -100,15 +100,14 @@ int MinibotServer::server() {
 			}
 			}
 
-			if (pkt.velocity > 95) {
-				pkt.velocity = 95;
-			} 
 
 			pkt.velocity *= 60;
 			pkt.velocity += 14;
-			pkt.velocity *= 0.07;
+			if (pkt.velocity > 95) {
+				pkt.velocity = 95;
+			} 
+			pkt.velocity /= CIRCUMFERENCE;
 
-			//pkt.velocity += 14;
 			printf("command %d %f\n", pkt.direction, pkt.velocity);
 			
 
