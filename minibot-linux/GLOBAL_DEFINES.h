@@ -36,7 +36,7 @@
 extern float TARGET_SPEED_L; //in RPM
 extern float TARGET_SPEED_R; //in RPM
 
-#define CIRCUMFERENCE 0.07 //in centimeters
+#define CIRCUMFERENCE 3.14*0.07 //in centimeters
 
 #define DIRECTION_STOP		0
 #define DIRECTION_FORWARD	1

@@ -10,7 +10,7 @@
 #define DEFAULT_BUFFER_SIZE 512
 #define SOCKET_ERROR -1
 #define INVALID_SOCKET -1
-#define SOCKET_READ_TIMEOUT_SEC 1
+#define SOCKET_READ_TIMEOUT_SEC 5
 
 
 const char * MinibotServer::IPADDRESS = "192.168.4.12";
@@ -77,26 +77,22 @@ int MinibotServer::server() {
 		if (rv <= 0)
 		{
 		    // timeout, socket does not have anything to read
-		    printf("Have no data to receive. \n");
 		    drive_motors(0.0f, DIRECTION_STOP);
 		    continue;
 		}
 		if ((bytes_rec = recv(botSocket, buff, buff_len, 0)) > 0) {
-			printf("Bytes received %d\n", bytes_rec);
-			printf("Data received\n %s", buff);
-
 			Control pkt;
 			int *i = (int *)buff;
 			pkt.orientation = *i++;
 			pkt.direction = *i++;
 
 			float *f = (float *)i;
-			pkt.velocity = (*f++); // scale from m/sec  to m/min
+			pkt.velocity = ((*f++)) + 14; // scale from m/sec  to m/min
+
 
 			direction = DIRECTION_STOP;
 			printf("Int Vel: %f\n", pkt.velocity);
-			if (((int) pkt.velocity)> 0) {
-			printf("We are moving!! :D\n");
+			if (((int) pkt.velocity)> 14) {
 			if (pkt.direction == 1) {
 				direction = DIRECTION_FORWARD;
 			} else if (pkt.direction == 0) {
@@ -104,7 +100,15 @@ int MinibotServer::server() {
 			}
 			}
 
+			if (pkt.velocity > 95) {
+				pkt.velocity = 95;
+			} 
+
+			pkt.velocity *= 60;
 			pkt.velocity += 14;
+			pkt.velocity *= 0.07;
+
+			//pkt.velocity += 14;
 			printf("command %d %f\n", pkt.direction, pkt.velocity);
 			
 
